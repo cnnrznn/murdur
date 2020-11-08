@@ -15,6 +15,7 @@ import os
 import PIL
 from arcade.draw_commands import Texture
 
+import maps
 import player
 
 SPRITE_SCALING_PLAYER = 0.5
@@ -73,6 +74,7 @@ class MyGame(arcade.Window):
         self.coin_list = None
         self.bullet_list = None
         self.explosions_list = None
+        self.wall_list = None
 
         # Set up the player info
         self.player = None
@@ -114,6 +116,7 @@ class MyGame(arcade.Window):
         self.coin_list = arcade.SpriteList()
         self.bullet_list = arcade.SpriteList()
         self.explosions_list = arcade.SpriteList()
+        self.wall_list = maps.create_walls()
 
         # Set up the player
         self.score = 0
@@ -123,7 +126,7 @@ class MyGame(arcade.Window):
         self.player.center_x = 0
         self.player.center_y = 0
         self.player_list.append(self.player)
-        self.physics_engine = arcade.PhysicsEngineSimple(self.player, arcade.SpriteList())
+        self.physics_engine = arcade.PhysicsEngineSimple(self.player, self.wall_list)
 
         # Create the coins
         for coin_index in range(COIN_COUNT):
@@ -190,6 +193,7 @@ class MyGame(arcade.Window):
         self.bullet_list.draw()
         self.player_list.draw()
         self.explosions_list.draw()
+        self.wall_list.draw()
 
         # Render the text
         arcade.draw_text(f"Score: {self.score}", 10, 20, arcade.color.WHITE, 14)
@@ -225,7 +229,6 @@ class MyGame(arcade.Window):
         """ Movement and game logic """
 
         self.physics_engine.update()
-
         self.player_list.update_animation()
 
         # Call update on bullet sprites
