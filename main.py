@@ -27,7 +27,7 @@ SCREEN_HEIGHT = 600
 SCREEN_TITLE = "Sprite Explosion Example"
 
 BULLET_SPEED = 5
-PLAYER_SPEED = 3
+PLAYER_SPEED = 4
 
 EXPLOSION_TEXTURE_COUNT = 60
 
@@ -103,8 +103,10 @@ class MyGame(arcade.Window):
         self.s_down = False
         self.w_down = False
 
-    def setup(self):
+        self.VIEW_LEFT = 0 - (SCREEN_WIDTH / 2)
+        self.VIEW_BOT = 0 - (SCREEN_HEIGHT / 2)
 
+    def setup(self):
         """ Set up the game and initialize the variables. """
 
         # Sprite lists
@@ -117,10 +119,9 @@ class MyGame(arcade.Window):
         self.score = 0
 
         # Image from kenney.nl
-        #self.player = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", SPRITE_SCALING_PLAYER)
         self.player = player.PlayerCharacter()
-        self.player.center_x = 50
-        self.player.center_y = 70
+        self.player.center_x = 0
+        self.player.center_y = 0
         self.player_list.append(self.player)
         self.physics_engine = arcade.PhysicsEngineSimple(self.player, arcade.SpriteList())
 
@@ -139,7 +140,7 @@ class MyGame(arcade.Window):
             self.coin_list.append(coin)
 
         # Set the background color
-        arcade.set_background_color(arcade.color.AMAZON)
+        arcade.set_background_color(arcade.color.ARSENIC)
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.UP:
@@ -230,6 +231,13 @@ class MyGame(arcade.Window):
         # Call update on bullet sprites
         self.bullet_list.update()
         self.explosions_list.update()
+
+        arcade.set_viewport(
+            self.VIEW_LEFT + self.player.center_x,
+            self.VIEW_LEFT + self.player.center_x + SCREEN_WIDTH,
+            self.VIEW_BOT + self.player.center_y,
+            self.VIEW_BOT + self.player.center_y + SCREEN_HEIGHT,
+        )
 
         # Loop through each bullet
         for bullet in self.bullet_list:

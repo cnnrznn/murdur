@@ -1,10 +1,9 @@
 import arcade
 
 # How fast to move, and how fast to run the animation
-PLAYER_SPEED = 3
 UPDATES_PER_FRAME = 5
 
-CHARACTER_SCALING = 1
+CHARACTER_SCALING = 0.5
 
 # Constants used to track if the player is facing left or right
 RIGHT_FACING = 0
@@ -40,12 +39,7 @@ class PlayerCharacter(arcade.Sprite):
         # --- Load Textures ---
 
         # Images from Kenney.nl's Asset Pack 3
-        main_path = ":resources:images/animated_characters/female_adventurer/femaleAdventurer"
-        # main_path = ":resources:images/animated_characters/female_person/femalePerson"
-        # main_path = ":resources:images/animated_characters/male_person/malePerson"
-        # main_path = ":resources:images/animated_characters/male_adventurer/maleAdventurer"
-        # main_path = ":resources:images/animated_characters/zombie/zombie"
-        # main_path = ":resources:images/animated_characters/robot/robot"
+        main_path = ":resources:images/animated_characters/zombie/zombie"
 
         # Load textures for idle standing
         self.idle_texture_pair = load_texture_pair(f"{main_path}_idle.png")
