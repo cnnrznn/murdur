@@ -80,6 +80,8 @@ class MyGame(arcade.Window):
         self.player = None
         self.score = 0
 
+        self.can_move = True
+
         # Pre-load the animation frames. We don't do this in the __init__
         # of the explosion sprite because it
         # takes too long and would cause the game to pause.
@@ -146,9 +148,10 @@ class MyGame(arcade.Window):
         arcade.set_background_color(arcade.color.ARSENIC)
 
     def on_key_press(self, key, modifiers):
-        if key == arcade.key.UP:
-            self.shoot()
-        elif key == arcade.key.A:
+        if not self.can_move:
+            return
+
+        if key == arcade.key.A:
             self.a_down = True
             self.player.change_x = -PLAYER_SPEED
         elif key == arcade.key.D:
@@ -179,6 +182,13 @@ class MyGame(arcade.Window):
             if not self.s_down:
                 self.player.change_y = 0
 
+    def disable_movement(self):
+        self.player.change_x = 0
+        self.player.change_y = 0
+        self.can_move = False
+
+    def enable_movement(self):
+        self.can_move = True
 
     def on_draw(self):
         """
@@ -203,27 +213,6 @@ class MyGame(arcade.Window):
         Called whenever the mouse button is clicked.
         """
         self.shoot()
-
-    def shoot(self):
-        # Gunshot sound
-        arcade.sound.play_sound(self.gun_sound)
-
-        # Create a bullet
-        bullet = arcade.Sprite(":resources:images/space_shooter/laserBlue01.png", SPRITE_SCALING_LASER)
-
-        # The image points to the right, and we want it to point up. So
-        # rotate it.
-        bullet.angle = 90
-
-        # Give it a speed
-        bullet.change_y = BULLET_SPEED
-
-        # Position the bullet
-        bullet.center_x = self.player.center_x
-        bullet.bottom = self.player.top
-
-        # Add the bullet to the appropriate lists
-        self.bullet_list.append(bullet)
 
     def on_update(self, delta_time):
         """ Movement and game logic """
