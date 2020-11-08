@@ -14,6 +14,7 @@ import arcade
 import os
 import PIL
 from arcade.draw_commands import Texture
+from arcade.experimental.lights import Light, LightLayer
 
 import maps
 import player
@@ -82,6 +83,10 @@ class MyGame(arcade.Window):
 
         self.can_move = True
 
+        self.light_layer = None
+        self.player_light = None
+        self.player_radius = 200
+
         # Pre-load the animation frames. We don't do this in the __init__
         # of the explosion sprite because it
         # takes too long and would cause the game to pause.
@@ -99,8 +104,6 @@ class MyGame(arcade.Window):
         # Load sounds. Sounds from kenney.nl
         self.gun_sound = arcade.sound.load_sound(":resources:sounds/laser2.wav")
         self.hit_sound = arcade.sound.load_sound(":resources:sounds/explosion2.wav")
-
-        arcade.set_background_color(arcade.color.AMAZON)
 
         self.a_down = False
         self.d_down = False
@@ -145,7 +148,15 @@ class MyGame(arcade.Window):
             self.coin_list.append(coin)
 
         # Set the background color
-        arcade.set_background_color(arcade.color.ARSENIC)
+        #arcade.set_background_color(arcade.color.CELESTIAL_BLUE)
+
+        # Lighting
+        self.light_layer = LightLayer(SCREEN_WIDTH, SCREEN_HEIGHT)
+        self.light_layer.set_background_color(arcade.color.CELESTIAL_BLUE)
+
+        # Player lighting
+        self.player_light = Light(0, 0, self.player_radius, arcade.csscolor.WHITE, 'soft')
+        self.light_layer.add(self.player_light)
 
     def on_key_press(self, key, modifiers):
         if not self.can_move:
@@ -199,9 +210,12 @@ class MyGame(arcade.Window):
         arcade.start_render()
 
         # Draw all the sprites.
-        self.coin_list.draw()
-        self.bullet_list.draw()
-        self.player_list.draw()
+        with self.light_layer:
+            self.coin_list.draw()
+            self.bullet_list.draw()
+            self.player_list.draw()
+        self.light_layer.draw(ambient_color=(0, 0, 0))
+
         self.explosions_list.draw()
         self.wall_list.draw()
 
@@ -230,6 +244,8 @@ class MyGame(arcade.Window):
             self.VIEW_BOT + self.player.center_y,
             self.VIEW_BOT + self.player.center_y + SCREEN_HEIGHT,
         )
+
+        self.player_light.position = self.player.position
 
         # Loop through each bullet
         for bullet in self.bullet_list:

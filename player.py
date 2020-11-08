@@ -1,7 +1,8 @@
 import arcade
+from arcade import sound
 
 # How fast to move, and how fast to run the animation
-UPDATES_PER_FRAME = 5
+UPDATES_PER_FRAME = 4
 
 CHARACTER_SCALING = 0.5
 
@@ -49,6 +50,9 @@ class PlayerCharacter(arcade.Sprite):
         for i in range(8):
             texture = load_texture_pair(f"{main_path}_walk{i}.png")
             self.walk_textures.append(texture)
+
+        # Load sound for walking
+        self.walk_sound = sound.load_sound(':resources:sounds/hurt2.wav')
 
     def update_animation(self, delta_time: float = 1/60):
             # Figure out if we need to flip face left or right
